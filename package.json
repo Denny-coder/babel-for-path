@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/Denny-coder/babel-for-path/issues"
   },
-  "homepage": "https://github.com/Denny-coder/babel-for-path#readme"
+  "homepage": "https://github.com/Denny-coder/babel-for-path#readme",
+  "dependencies": {
+    "commander": "^8.1.0"
+  }
 }
