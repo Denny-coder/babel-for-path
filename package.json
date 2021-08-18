@@ -1,0 +1,27 @@
+{
+  "name": "babel-for-path",
+  "version": "1.0.0",
+  "description": "使用babel进行代码引用路径转换",
+  "main": "start.js",
+  "bin": {
+    "xPath": "start.js"
+  },
+  "scripts": {
+    "test": "xPath"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Denny-coder/babel-for-path.git"
+  },
+  "keywords": [
+    "babel",
+    "npm",
+    "cli"
+  ],
+  "author": "zke",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Denny-coder/babel-for-path/issues"
+  },
+  "homepage": "https://github.com/Denny-coder/babel-for-path#readme"
+}
