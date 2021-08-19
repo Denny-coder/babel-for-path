@@ -4,10 +4,10 @@
   "description": "使用babel进行代码引用路径转换",
   "main": "start.js",
   "bin": {
-    "xPath": "start.js"
+    "pathX": "start.js"
   },
   "scripts": {
-    "test": "xPath"
+    "test": "pathX -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/PayMent/FlightPayState"
   },
   "repository": {
     "type": "git",
