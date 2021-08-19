@@ -3,18 +3,20 @@ var path = require("path");
 class File {
   constructor(data) {
     this.data = data;
+    this.dirs = [];
   }
-  getAllFile() {
-    let dirs = [];
-    fs.readdir(this.data.root, (err, files) => {
+  getAllFile(filePath) {
+    fs.readdir(filePath, (err, files) => {
       for (var i = 0; i < files.length; i++) {
-        fs.stat(path.join(this.data.root, files[i]), function (err, data) {
+        fs.stat(path.join(filePath, files[i]), (err, data) => {
           if (data.isFile()) {
-            dirs.push(files[i]);
+            this.dirs.push(files[i]);
+          } else {
+            this.getAllFile(files[i]);
           }
         });
       }
-      console.log(dirs);
+      console.log(this.dirs);
     });
   }
 }
