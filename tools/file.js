@@ -1,23 +1,27 @@
 var fs = require("fs");
 var path = require("path");
+const targetFile = /(\.js)|(\.scss)|(\.vue)/;
 class File {
   constructor(data) {
     this.data = data;
+    this.rootComponents = path.join(data.root, "./Components");
     this.dirs = [];
   }
-  getAllFile(filePath) {
-    fs.readdir(filePath, (err, files) => {
-      for (var i = 0; i < files.length; i++) {
-        fs.stat(path.join(filePath, files[i]), (err, data) => {
-          if (data.isFile()) {
-            this.dirs.push(files[i]);
-          } else {
-            this.getAllFile(files[i]);
+  async getAllFile(filePath) {
+    const files = fs.readdirSync(filePath);
+    for (var i = 0; i < files.length; i++) {
+      const subPath = path.join(filePath, files[i]);
+      if (subPath !== this.rootComponents) {
+        const data = fs.statSync(subPath);
+        if (data.isFile()) {
+          if (targetFile.test(files[i])) {
+            this.dirs.push(subPath);
           }
-        });
+        } else {
+          this.getAllFile(subPath);
+        }
       }
-      console.log(this.dirs);
-    });
+    }
   }
 }
 module.exports = File;

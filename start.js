@@ -15,6 +15,7 @@ program
   .description("npm包批量发布。。。")
   .action(async (data) => {
     const fs = new File(data);
-    console.log(fs.getAllFile(data.root));
+    await fs.getAllFile(data.root);
+    console.log(fs.dirs);
   });
 program.parse(process.argv);
