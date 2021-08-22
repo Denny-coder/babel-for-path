@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { program } = require("commander");
-const File = require("./tools/file");
+const XPath = require("./tools/xPath");
 // 定义当前版本
 program.version(
   require("./package.json").version,
@@ -12,10 +12,9 @@ program.version(
 program.usage("<command>");
 program
   .requiredOption("-r, --root <string>", "项目的根路径")
+  .requiredOption("-t, --targetPath <string>", "转换的目标路径")
   .description("npm包批量发布。。。")
   .action(async (data) => {
-    const fs = new File(data);
-    await fs.getAllFile(data.root);
-    console.log(fs.dirs);
+    new XPath(data);
   });
 program.parse(process.argv);

@@ -1,27 +1,51 @@
 var fs = require("fs");
 var path = require("path");
-const targetFile = /(\.js)|(\.scss)|(\.vue)/;
+const targetFile = /(\.js$)/;
 class File {
   constructor(data) {
     this.data = data;
     this.rootComponents = path.join(data.root, "./Components");
-    this.dirs = [];
+    this.targetPath = data.targetPath;
+    this.jsFileList = [];
+    this.scssFileList = [];
   }
-  async getAllFile(filePath) {
+  getAllFile(filePath) {
     const files = fs.readdirSync(filePath);
     for (var i = 0; i < files.length; i++) {
       const subPath = path.join(filePath, files[i]);
       if (subPath !== this.rootComponents) {
-        const data = fs.statSync(subPath);
-        if (data.isFile()) {
-          if (targetFile.test(files[i])) {
-            this.dirs.push(subPath);
+        if (this.isFile(subPath)) {
+          if (/(\.js$)/.test(files[i])) {
+            this.jsFileList.push(subPath);
+          }
+          if (/(\.scss$)/.test(files[i])) {
+            this.scssFileList.push(subPath);
           }
         } else {
           this.getAllFile(subPath);
         }
       }
     }
+  }
+
+  readFile(filePath) {
+    const source = fs.readFileSync(filePath, { encoding: "utf8" });
+    return source;
+  }
+  writeFileSync(filePath, targetCode) {
+    fs.writeFileSync(filePath, targetCode, { encoding: "utf8" });
+  }
+  isFile(subPath) {
+    try {
+      const statSync = fs.statSync(subPath);
+      return statSync.isFile();
+    } catch (error) {
+      return false;
+    }
+  }
+  existsSync(subPath) {
+    const existsSync = fs.existsSync(subPath);
+    return existsSync;
   }
 }
 module.exports = File;

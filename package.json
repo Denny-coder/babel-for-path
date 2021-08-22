@@ -7,7 +7,8 @@
     "pathX": "start.js"
   },
   "scripts": {
-    "test": "pathX -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/PayMent/FlightPayState"
+    "test": "pathX -r E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/PayMent/FlightPayState -t E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/PayMent/Components",
+    "nodeDev": "node   start.js  -r E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Booking -t E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Components"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,16 @@
   },
   "homepage": "https://github.com/Denny-coder/babel-for-path#readme",
   "dependencies": {
-    "commander": "^8.1.0"
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.15.0",
+    "@babel/generator": "^7.15.0",
+    "@babel/node": "^7.14.9",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/traverse": "^7.15.0",
+    "commander": "^8.1.0",
+    "ncp": "^2.0.0",
+    "postcss": "^8.3.6",
+    "postcss-scss": "^4.0.0",
+    "sass": "^1.38.0"
   }
 }
