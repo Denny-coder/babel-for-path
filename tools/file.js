@@ -9,6 +9,23 @@ class File {
     this.jsFileList = [];
     this.scssFileList = [];
   }
+  static getSubFolder(filePath) {
+    const result = [];
+    const files = fs.readdirSync(filePath);
+    for (var i = 0; i < files.length; i++) {
+      const subPath = path.join(filePath, files[i]);
+      if (
+        fs.statSync(subPath).isDirectory() &&
+        subPath.indexOf("Components") < 0
+      ) {
+        result.push({
+          root: subPath,
+          targetPath: path.join(filePath, "./Components"),
+        });
+      }
+    }
+    return result;
+  }
   getAllFile(filePath) {
     const files = fs.readdirSync(filePath);
     for (var i = 0; i < files.length; i++) {

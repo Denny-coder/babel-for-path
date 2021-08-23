@@ -7,7 +7,7 @@
     "pathX": "start.js"
   },
   "scripts": {
-    "testMac": "node --inspect-brk  start.js -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Booking -t /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Components",
+    "testMac": "node  start.js -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Hotel",
     "nodeDevWin": "node   start.js  -r E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Booking -t E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Components"
   },
   "repository": {

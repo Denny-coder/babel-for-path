@@ -152,18 +152,12 @@ class XPath {
     const currentPath = path.parse(filePath);
     console.log("currentPath", currentPath.dir);
     console.log("targetPath", program.source.value);
-    let targetFile;
-    const extname = path.extname(program.source.value);
-    if (extname === "") {
-      targetFile = path.resolve(currentPath.dir, `${program.source.value}.js`);
-    } else {
-      targetFile = path.resolve(currentPath.dir, program.source.value);
-    }
+    let targetFile = path.resolve(currentPath.dir, `${program.source.value}`);
     console.log("targetFile", targetFile);
     const xPath = path.relative(filePath, targetFile);
     console.log("xPath", xPath);
     const xPathFile = path.resolve(currentPath.dir, xPath);
-    if (this.fs.isFile(xPathFile)) {
+    if (this.fs.isFile(`${xPathFile}.js`)) {
       console.log(require("os").platform());
       program.source.value = xPath.split(path.sep).join("/");
     }
@@ -177,18 +171,12 @@ class XPath {
       const currentPath = path.parse(filePath);
       console.log("currentPath", currentPath.dir);
       console.log("targetPath", program.value);
-      let targetFile;
-      const extname = path.extname(program.value);
-      if (extname === "") {
-        targetFile = path.resolve(currentPath.dir, `${program.value}.js`);
-      } else {
-        targetFile = path.resolve(currentPath.dir, program.value);
-      }
+      let targetFile = path.resolve(currentPath.dir, program.value);
       console.log("targetFile", targetFile);
       const xPath = path.relative(filePath, targetFile);
       console.log("xPath", xPath);
       const xPathFile = path.resolve(currentPath.dir, xPath);
-      if (this.fs.isFile(xPathFile)) {
+      if (this.fs.isFile(`${xPathFile}.js`)) {
         program.value = xPath.split(path.sep).join("/");
       }
     }
@@ -207,10 +195,10 @@ class XPath {
       let targetFileLine; // 为了兼容带_的文件名
       const parseFile = path.parse(targetPath);
       if (parseFile.ext === "") {
-        targetFile = path.resolve(currentPath.dir, `${targetPath}.scss`);
+        targetFile = path.resolve(currentPath.dir, `${targetPath}`);
         targetFileLine = path.resolve(
           currentPath.dir,
-          `${parseFile.dir}/_${parseFile.name}.scss`
+          `${parseFile.dir}/_${parseFile.name}`
         );
       } else {
         targetFile = path.resolve(currentPath.dir, targetPath);
@@ -227,10 +215,10 @@ class XPath {
       console.log("xPath", xPathLine);
       const xPathFile = path.resolve(currentPath.dir, xPath);
       const xPathFileLine = path.resolve(currentPath.dir, xPathLine);
-      if (this.fs.isFile(xPathFile)) {
+      if (this.fs.isFile(`${xPathFile}.scss`)) {
         program.params = '"' + xPath.split(path.sep).join("/") + '"';
-      } else if (this.fs.isFile(xPathFileLine)) {
-        program.params = '"' + xPathFileLine.split(path.sep).join("/") + '"';
+      } else if (this.fs.isFile(`${xPathFileLine}.scss`)) {
+        program.params = '"' + xPathLine.split(path.sep).join("/") + '"';
       }
     }
   }
