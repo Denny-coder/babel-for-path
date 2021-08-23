@@ -88,6 +88,35 @@ class XPath {
             this.RequireInit(initProgram, filePath);
           });
         }
+        // if判断 require.ensure倒入时
+        if (
+          program.type === "IfStatement" &&
+          program.consequent &&
+          program.consequent.type === "BlockStatement" &&
+          Array.isArray(program.consequent.body)
+        ) {
+          program.consequent.body.forEach((consequentProgram) => {
+            if (
+              consequentProgram.type === "ExpressionStatement" &&
+              consequentProgram.expression &&
+              consequentProgram.expression.type === "CallExpression" &&
+              Array.isArray(consequentProgram.expression.arguments)
+            ) {
+              consequentProgram.expression.arguments.forEach(
+                (arrayExpressionProgram) => {
+                  if (
+                    arrayExpressionProgram.type === "ArrayExpression" &&
+                    Array.isArray(arrayExpressionProgram.elements)
+                  ) {
+                    arrayExpressionProgram.elements.forEach((item) => {
+                      this.RequireInit(item, filePath);
+                    });
+                  }
+                }
+              );
+            }
+          });
+        }
       });
       try {
         const targetCode = Babel.generate(result, { sourceMaps: true }, source);
@@ -135,9 +164,8 @@ class XPath {
     console.log("xPath", xPath);
     const xPathFile = path.resolve(currentPath.dir, xPath);
     if (this.fs.isFile(xPathFile)) {
-      if (/^win/.test(require("os").platform())) {
-        program.source.value = xPath.replace(/\\/g, "/");
-      }
+      console.log(require("os").platform());
+      program.source.value = xPath.split(path.sep).join("/");
     }
   }
   // require 导入
@@ -161,9 +189,7 @@ class XPath {
       console.log("xPath", xPath);
       const xPathFile = path.resolve(currentPath.dir, xPath);
       if (this.fs.isFile(xPathFile)) {
-        if (/^win/.test(require("os").platform())) {
-          program.value = xPath.replace(/\\/g, "/");
-        }
+        program.value = xPath.split(path.sep).join("/");
       }
     }
   }
@@ -202,11 +228,9 @@ class XPath {
       const xPathFile = path.resolve(currentPath.dir, xPath);
       const xPathFileLine = path.resolve(currentPath.dir, xPathLine);
       if (this.fs.isFile(xPathFile)) {
-        if (/^win/.test(require("os").platform())) {
-          program.params = '"' + xPath.replace(/\\/g, "/") + '"';
-        }
+        program.params = '"' + xPath.split(path.sep).join("/") + '"';
       } else if (this.fs.isFile(xPathFileLine)) {
-        program.params = '"' + xPathLine.replace(/\\/g, "/") + '"';
+        program.params = '"' + xPathFileLine.split(path.sep).join("/") + '"';
       }
     }
   }
