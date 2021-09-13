@@ -1,5 +1,4 @@
 var babel = require("@babel/core");
-const generate = require("@babel/generator").default;
 class Babel {
   static ast(code) {
     var result = babel.parse(code, {

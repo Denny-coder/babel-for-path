@@ -1,6 +1,5 @@
 var fs = require("fs");
 var path = require("path");
-const targetFile = /(\.js$)/;
 class File {
   constructor(data) {
     this.data = data;

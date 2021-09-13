@@ -191,22 +191,12 @@ class XPath {
       const targetPath = program.params.replace(/'|"/g, "");
       console.log("currentPath", currentPath.dir);
       console.log("targetPath", path.parse(targetPath));
-      let targetFile;
-      let targetFileLine; // 为了兼容带_的文件名
       const parseFile = path.parse(targetPath);
-      if (parseFile.ext === "") {
-        targetFile = path.resolve(currentPath.dir, `${targetPath}`);
-        targetFileLine = path.resolve(
-          currentPath.dir,
-          `${parseFile.dir}/_${parseFile.name}`
-        );
-      } else {
-        targetFile = path.resolve(currentPath.dir, targetPath);
-        targetFileLine = path.resolve(
-          currentPath.dir,
-          `${parseFile.dir}/_${parseFile.name}`
-        );
-      }
+      let targetFile = path.resolve(currentPath.dir, targetPath);
+      let targetFileLine = path.resolve(
+        currentPath.dir,
+        `${parseFile.dir}/_${parseFile.name}${parseFile.ext}`
+      ); // 为了兼容带_的文件名
       console.log("targetFile", targetFile);
       console.log("targetFile", targetFileLine);
       const xPath = path.relative(filePath, targetFile);
@@ -215,9 +205,12 @@ class XPath {
       console.log("xPath", xPathLine);
       const xPathFile = path.resolve(currentPath.dir, xPath);
       const xPathFileLine = path.resolve(currentPath.dir, xPathLine);
-      if (this.fs.isFile(`${xPathFile}.scss`)) {
+      if (this.fs.isFile(`${xPathFile}.scss`) || this.fs.isFile(xPathFile)) {
         program.params = '"' + xPath.split(path.sep).join("/") + '"';
-      } else if (this.fs.isFile(`${xPathFileLine}.scss`)) {
+      } else if (
+        this.fs.isFile(`${xPathFileLine}.scss`) ||
+        this.fs.isFile(xPathFileLine)
+      ) {
         program.params = '"' + xPathLine.split(path.sep).join("/") + '"';
       }
     }
