@@ -1,13 +1,14 @@
 {
   "name": "babel-for-path",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "使用babel进行代码引用路径转换",
   "main": "start.js",
   "bin": {
     "pathX": "start.js"
   },
   "scripts": {
-    "testMac": "node  start.js -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight",
+    "testMac": "node  start.js -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight -p /Users/denny/Downloads/workSpace/vue-release/corp_wirless_vue_flight",
+    "testMacT": "node  start.js -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Booking -t /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Components",
     "nodeDevWin": "node   start.js  -r E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Booking -t E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Components"
   },
   "repository": {
@@ -33,6 +34,7 @@
     "@babel/preset-env": "^7.15.0",
     "@babel/traverse": "^7.15.0",
     "commander": "^8.1.0",
+    "copy-dir": "^1.3.0",
     "ncp": "^2.0.0",
     "postcss": "^8.3.6",
     "postcss-scss": "^4.0.0",

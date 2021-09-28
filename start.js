@@ -12,17 +12,26 @@ program.version(
 
 program.usage("<command>");
 program
-  .requiredOption("-r, --root <string>", "项目的根路径")
-  .option("-t, --targetPath <string>", "转换的目标路径")
+  .requiredOption("-r, --root <string>", "Vue项目中的产线根路径")
+  .option("-t, --targetPath <string>", "Vue项目中的产线DB的目标路径")
+  .option("-p, --projectPath <string>", "新项目的路径")
   .description("npm包批量发布。。。")
   .action(async (data) => {
     if (!data.targetPath) {
       const allTarget = fs.getSubFolder(data.root);
-      allTarget.forEach((target) => {
-        new XPath(target);
-      });
+      for (let index = 0; index < allTarget.length; index++) {
+        const element = allTarget[index];
+        const xPath = new XPath(element);
+        console.log("index", index);
+        await xPath.start();
+        console.log("index", index);
+      }
+      if (data.projectPath) {
+        fs.movProject(data.root, data.projectPath);
+      }
     } else {
-      new XPath(data);
+      const xPath = new XPath(data);
+      xPath.start();
     }
   });
 program.parse(process.argv);

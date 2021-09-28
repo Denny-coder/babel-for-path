@@ -1,53 +1,48 @@
 const File = require("./file");
 const Babel = require("./babel");
+const ncp = require("./ncp");
 const path = require("path");
-const ncp = require("ncp").ncp;
 const scssParse = require("postcss-scss/lib/scss-parse");
 const scssStringify = require("postcss-scss/lib/scss-stringify");
-ncp.limit = 16;
 class XPath {
   constructor(data) {
     this.data = data;
     this.fs = new File(data);
     this.fs.getAllFile(data.root);
-    this.moveComponents(() => {
-      this.startJs();
-      this.startScss();
-    });
   }
-  moveComponents(cb) {
+  async start() {
+    await this.moveComponents();
+    this.startJs();
+    this.startScss();
+  }
+  async moveComponents() {
     if (this.fs.existsSync(this.fs.rootComponents)) {
       const destination = path.join(this.fs.rootComponents, "../../Components");
       if (!this.fs.existsSync(destination)) {
-        ncp(this.fs.rootComponents, destination, (err) => {
-          if (err) {
-            return console.error(err);
-          } else {
-            cb();
-            console.log("done!");
-          }
-        });
-      } else {
-        cb();
+        const ncpRes = await ncp(this.fs.rootComponents, destination);
+        if (ncpRes) {
+          return console.error(ncpRes);
+        } else {
+          console.log("donedonedonedonedone!");
+        }
       }
     } else {
       const sourceDB = path.join(
         this.fs.rootComponents.split("Corp_Wirless_Vue")[0],
         "Corp_Wirless_DB/APP"
       );
-      ncp(sourceDB, this.fs.rootComponents, (err) => {
-        if (err) {
-          return console.error(err);
-        }
-        this.moveComponents(cb);
-      });
+      const ncpRes = await ncp(sourceDB, this.fs.rootComponents);
+      if (ncpRes) {
+        return console.error(ncpRes);
+      }
+      await this.moveComponents();
     }
   }
   startJs() {
     this.fs.jsFileList.forEach((filePath) => {
       const source = this.fs.readFile(filePath);
       const result = Babel.ast(source);
-      console.log("currentFilecurrentFilecurrentFile", filePath);
+      // console.log("currentFilecurrentFilecurrentFile", filePath);
       result.program.body.forEach((program) => {
         // import 导入时
         if (
@@ -157,7 +152,7 @@ class XPath {
     const xPath = path.relative(filePath, targetFile);
     console.log("xPath", xPath);
     const xPathFile = path.resolve(currentPath.dir, xPath);
-    if (this.fs.isFile(`${xPathFile}.js`)) {
+    if (this.fs.isFile(xPathFile) || this.fs.isFile(`${xPathFile}.js`)) {
       console.log(require("os").platform());
       program.source.value = xPath.split(path.sep).join("/");
     }
@@ -176,7 +171,7 @@ class XPath {
       const xPath = path.relative(filePath, targetFile);
       console.log("xPath", xPath);
       const xPathFile = path.resolve(currentPath.dir, xPath);
-      if (this.fs.isFile(`${xPathFile}.js`)) {
+      if (this.fs.isFile(xPathFile) || this.fs.isFile(`${xPathFile}.js`)) {
         program.value = xPath.split(path.sep).join("/");
       }
     }
