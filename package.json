@@ -9,7 +9,8 @@
   "scripts": {
     "testMac": "node  start.js -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight -p /Users/denny/Downloads/workSpace/vue-release/corp_wirless_vue_flight",
     "testMacT": "node  start.js -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Booking -t /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Components",
-    "nodeDevWin": "node   start.js  -r E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Booking -t E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Components"
+    "nodeDevWin": "node   start.js  -r E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Booking -t E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Components",
+    "clone": "node start.js clone  -t E:/ctrip/cloneTest -c E:/ctrip/tools/config/clone.json"
   },
   "repository": {
     "type": "git",
@@ -38,6 +39,7 @@
     "ncp": "^2.0.0",
     "postcss": "^8.3.6",
     "postcss-scss": "^4.0.0",
-    "sass": "^1.38.0"
+    "sass": "^1.38.0",
+    "shelljs": "^0.8.4"
   }
 }
