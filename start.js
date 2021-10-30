@@ -4,6 +4,7 @@ const { program } = require("commander");
 const XPath = require("./tools/move/xPath");
 const fs = require("./tools/move/file");
 const Clone = require("./tools/clone/clone");
+const View = require("./tools/clone/view");
 // 定义当前版本
 program.version(
   require("./package.json").version,
@@ -38,10 +39,14 @@ program
   });
 program
   .command("clone")
-  .requiredOption("-t, --target <string>", "目标路径")
-  .option("-c, --config <string>", "配置文件")
+  .requiredOption("-c, --config <string>", "配置文件")
+  .option("-t, --target <string>", "目标路径")
   .description("按配置文件目录结构批量克隆GIT项目")
   .action((data) => {
-    new Clone(data);
+    if (!data.target) {
+      new View(data);
+    } else {
+      new Clone(data);
+    }
   });
 program.parse(process.argv);

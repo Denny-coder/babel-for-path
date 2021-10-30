@@ -1,10 +1,11 @@
 var fs = require("fs");
 const shell = require("shelljs");
+const process = require("process");
 
 class Clone {
   constructor(data) {
     this.config = require(data.config);
-    this.targetPath = data.target;
+    this.targetPath = data.target || process.cwd();
     this.startClone(this.config, this.targetPath);
   }
   startClone(config, targetPath) {
