@@ -19,8 +19,7 @@ class View {
   }
   gitRepo(group, number) {
     group.forEach((repo) => {
-      const repoArr = repo.split("/");
-      this.indent(repoArr[repoArr.length - 1], number);
+      this.indent(repo.match(/(?<=\/)[^\/]+(?=\.git)/)[0], number);
     });
   }
   folder(folder, number) {
