@@ -4,7 +4,7 @@
  * @LastEditTime: 2021-09-16 17:36:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: /babel-for-path/tools/ncp.js
+ * @FilePath: /babel-for-path/tools/move/ncp.js
  */
 const ncp = require("ncp").ncp;
 ncp.limit = 16;

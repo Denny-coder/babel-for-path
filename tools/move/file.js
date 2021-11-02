@@ -1,6 +1,8 @@
 var fs = require("fs");
 var path = require("path");
 var copyDir = require("copy-dir");
+const shell = require("shelljs");
+
 class File {
   constructor(data) {
     this.data = data;
@@ -30,46 +32,51 @@ class File {
     const pathArr = originPath.split("/");
     const productType = pathArr[pathArr.length - 1];
 
-    copyDir(
-      path.join(originPath, "../.."),
-      targetPath,
-      {
-        filter: function (stat, filepath, filename) {
-          // do not want copy symbolicLink directories
-          // if (/Corp_Wirless_Vue/.test(filename)) {
-          //   return true;
-          // }
-          // if (/src/.test(filename)) {
-          //   return true;
-          // }
-          if (/\.git$|node_modules$|node-v7\.4\.0/.test(filename)) {
-            return false;
-          }
-          if (/src/g.test(filepath)) {
-            if (/src\/\w+\/\w+\/Components/g.test(filepath)) {
-              if (/src\/\w+\/Components\//g.test(filepath)) {
-                return true;
-              }
-              return false;
-            }
-            if (/src\/\w+\/Components/g.test(filepath)) {
+    copyDir.sync(path.join(originPath, "../.."), targetPath, {
+      filter: function (stat, filepath, filename) {
+        // do not want copy symbolicLink directories
+        // if (/Corp_Wirless_Vue/.test(filename)) {
+        //   return true;
+        // }
+        // if (/src/.test(filename)) {
+        //   return true;
+        // }
+        if (/\.git$|node_modules$|node-v7\.4\.0/.test(filename)) {
+          return false;
+        }
+        if (/src/g.test(filepath)) {
+          if (/src\/\w+\/\w+\/Components/g.test(filepath)) {
+            if (/src\/\w+\/Components\//g.test(filepath)) {
               return true;
             }
-            if (/src\/\w+$/g.test(filepath)) {
-              if (new RegExp(`src\/${productType}`, "g").test(filepath)) {
-                return true;
-              } else {
-                return false;
-              }
+            return false;
+          }
+          if (/src\/\w+\/Components/g.test(filepath)) {
+            return true;
+          }
+          if (/src\/\w+$/g.test(filepath)) {
+            if (new RegExp(`src\/${productType}`, "g").test(filepath)) {
+              return true;
+            } else {
+              return false;
             }
           }
+        }
 
-          return true; // remind to return a true value when file check passed.
-        },
+        return true; // remind to return a true value when file check passed.
       },
-      function (err) {
-        if (err) throw err;
-        console.log("done");
+    });
+  }
+  // 删除新增的文件和修改
+  static removeFileAndRestore(rootPath, rootComponents) {
+    shell.exec(
+      `cd ${rootPath} && git restore . && rm -rf ${rootComponents}`,
+      function (code, stdout, stderr) {
+        if (stderr) {
+          console.log(stderr);
+        } else {
+          console.log("done!!!");
+        }
       }
     );
   }
@@ -109,6 +116,7 @@ class File {
       return false;
     }
   }
+
   existsSync(subPath) {
     const existsSync = fs.existsSync(subPath);
     return existsSync;

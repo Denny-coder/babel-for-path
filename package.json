@@ -1,15 +1,17 @@
 {
   "name": "babel-for-path",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "使用babel进行代码引用路径转换",
   "main": "start.js",
   "bin": {
     "pathX": "start.js"
   },
   "scripts": {
-    "testMac": "node  start.js -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight -p /Users/denny/Downloads/workSpace/vue-release/corp_wirless_vue_flight",
-    "testMacT": "node  start.js -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Booking -t /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Components",
-    "nodeDevWin": "node   start.js  -r E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Booking -t E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Components"
+    "testMac": "node  start.js move -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight -p /Users/denny/Downloads/workSpace/vue-release/corp_wirless_vue_flight",
+    "testMacT": "node  start.js move -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Booking -t /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Components",
+    "nodeDevWin": "node   start.js move  -r E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Booking -t E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Components",
+    "view": "node start.js clone -c E:/ctrip/tools/config/clone.json",
+    "clone": "node start.js clone  -t /Users/denny/workspace/test -c /Users/denny/workspace/demo/babel-for-path/config.json"
   },
   "repository": {
     "type": "git",
@@ -38,6 +40,7 @@
     "ncp": "^2.0.0",
     "postcss": "^8.3.6",
     "postcss-scss": "^4.0.0",
-    "sass": "^1.38.0"
+    "sass": "^1.38.0",
+    "shelljs": "^0.8.4"
   }
 }
