@@ -2,9 +2,11 @@
 
 const { program } = require("commander");
 const XPath = require("./tools/move/xPath");
+const path = require("path");
 const fs = require("./tools/move/file");
 const Clone = require("./tools/clone/clone");
 const View = require("./tools/clone/view");
+const Example = require("./tools/clone/example");
 // 定义当前版本
 program.version(
   require("./package.json").version,
@@ -34,19 +36,32 @@ program
       }
     } else {
       const xPath = new XPath(data);
-      xPath.start();
+      await xPath.start();
     }
+    fs.removeFileAndRestore(data.root, path.join(data.root, "./Components"));
   });
 program
   .command("clone")
-  .requiredOption("-c, --config <string>", "配置文件")
-  .option("-t, --target <string>", "目标路径")
+  .option("-c, --config <path>", "配置文件")
+  .option("-t, --target <path>", "目标路径")
+  .option("-p, --preview", "预览目录结构")
+  .option("-e, --example", "配置文件示例")
   .description("按配置文件目录结构批量克隆GIT项目")
   .action((data) => {
-    if (!data.target) {
-      new View(data);
+    if (data.example) {
+      new Example();
     } else {
-      new Clone(data);
+      if (!data.config) {
+        console.log(
+          `error: required option '-c, --cheese <type>' not specified`
+        );
+      } else {
+        if (data.preview) {
+          new View(data);
+        } else {
+          new Clone(data);
+        }
+      }
     }
   });
 program.parse(process.argv);

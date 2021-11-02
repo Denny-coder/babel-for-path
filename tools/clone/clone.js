@@ -35,11 +35,11 @@ class Clone {
     }
     const keys = Object.keys(config);
     keys.forEach((fileName) => {
-      let fliePath = `${targetPath}/${fileName}`;
+      let filePath = `${targetPath}/${fileName}`;
       if (!fs.existsSync(targetPath)) {
         fs.mkdirSync(`${targetPath}/${fileName}`);
       }
-      this.startClone(config[fileName], fliePath);
+      this.startClone(config[fileName], filePath);
     });
   }
   addProjectManager(name, rootPath) {
