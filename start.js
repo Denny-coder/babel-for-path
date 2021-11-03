@@ -7,6 +7,7 @@ const fs = require("./tools/move/file");
 const Clone = require("./tools/clone/clone");
 const View = require("./tools/clone/view");
 const Example = require("./tools/clone/example");
+const TranslateMap = require("./tools/translate/trans");
 // 定义当前版本
 program.version(
   require("./package.json").version,
@@ -63,5 +64,12 @@ program
         }
       }
     }
+  });
+program
+  .command("trans")
+  .option("-f, --folder <path>", "需要翻译的文件夹或者文件")
+  .description("映射翻译内容")
+  .action((data) => {
+    new TranslateMap()
   });
 program.parse(process.argv);

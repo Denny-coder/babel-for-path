@@ -11,7 +11,8 @@
     "testMacT": "node  start.js move -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Booking -t /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Components",
     "nodeDevWin": "node   start.js move  -r E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Booking -t E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Components",
     "view": "node start.js clone -c E:/ctrip/tools/config/clone.json",
-    "clone": "node start.js clone  -t /Users/denny/workspace/test -c /Users/denny/workspace/demo/babel-for-path/config.json"
+    "clone": "node start.js clone  -t /Users/denny/workspace/test -c /Users/denny/workspace/demo/babel-for-path/config.json",
+    "trans": "node start.js trans  -f /Users/denny/Downloads/workSpace/vue-release/corp_wirless_vue_flight/src/Flight/Booking/Search/Search.js"
   },
   "repository": {
     "type": "git",
