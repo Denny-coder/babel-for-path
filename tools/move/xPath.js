@@ -4,10 +4,13 @@ const ncp = require("./ncp");
 const path = require("path");
 const scssParse = require("postcss-scss/lib/scss-parse");
 const scssStringify = require("postcss-scss/lib/scss-stringify");
+const config = require("../utils/const");
 class XPath {
   constructor(data) {
     this.data = data;
     this.fs = new File(data);
+    this.level =
+      config[File.productType === "Flight" ? "Flight" : "Hotel"].level;
     this.fs.getAllFile(data.root);
   }
   async start() {
@@ -17,9 +20,12 @@ class XPath {
   }
   async moveComponents() {
     if (this.fs.existsSync(this.fs.rootComponents)) {
-      const destination = path.join(this.fs.rootComponents, "../../Components");
-      if (!this.fs.existsSync(destination)) {
-        const ncpRes = await ncp(this.fs.rootComponents, destination);
+      XPath.destination = path.join(
+        this.fs.rootComponents,
+        `../${this.level}Components`
+      );
+      if (!this.fs.existsSync(XPath.destination)) {
+        const ncpRes = await ncp(this.fs.rootComponents, XPath.destination);
         if (ncpRes) {
           return console.error(ncpRes);
         } else {
@@ -42,13 +48,9 @@ class XPath {
     this.fs.jsFileList.forEach((filePath) => {
       const source = this.fs.readFile(filePath);
       const result = Babel.ast(source);
-      // console.log("currentFilecurrentFilecurrentFile", filePath);
       result.program.body.forEach((program) => {
         // import 导入时
-        if (
-          program.type === "ImportDeclaration" &&
-          /(Components)/.test(program.source.value)
-        ) {
+        if (program.type === "ImportDeclaration") {
           this.ImportDeclaration(program, filePath);
         }
         // require 导入并赋值时
@@ -141,65 +143,52 @@ class XPath {
   }
   // import 导入时
   ImportDeclaration(program, filePath) {
-    //   const targetFilePath = path.join(this.fs.rootComponents, program.source.value);
-    //   console.log("resolve", path.relative(filePath, this.fs.rootComponents));
-    //   console.log("relative", path.relative(filePath, this.fs.targetPath));
-    const currentPath = path.parse(filePath);
-    console.log("currentPath", currentPath.dir);
-    console.log("targetPath", program.source.value);
-    let targetFile = path.resolve(currentPath.dir, `${program.source.value}`);
-    console.log("targetFile", targetFile);
-    const xPath = path.relative(filePath, targetFile);
-    console.log("xPath", xPath);
-    const xPathFile = path.resolve(currentPath.dir, xPath);
-    if (this.fs.isFile(xPathFile) || this.fs.isFile(`${xPathFile}.js`)) {
-      console.log(require("os").platform());
-      program.source.value = xPath.split(path.sep).join("/");
+    if (/(Components)/.test(program.source.value) && !/\/H5\//.test(filePath)) {
+      const [xPath, xPathFile] = this.getRelativePath(
+        program.source.value,
+        filePath
+      );
+      if (
+        this.fs.isFile(xPathFile) ||
+        this.fs.isFile(`${xPathFile}.js`) ||
+        this.fs.isFile(path.join(xPathFile, "./index.js"))
+      ) {
+        program.source.value = xPath.split(path.sep).join("/");
+      } else {
+        console.log(filePath);
+      }
     }
   }
   // require 导入
   RequireInit(program, filePath) {
-    if (/(Components)/.test(program.value)) {
-      //   const targetFilePath = path.join(this.fs.rootComponents, program.source.value);
-      //   console.log("resolve", path.relative(filePath, this.fs.rootComponents));
-      //   console.log("relative", path.relative(filePath, this.fs.targetPath));
-      const currentPath = path.parse(filePath);
-      console.log("currentPath", currentPath.dir);
-      console.log("targetPath", program.value);
-      let targetFile = path.resolve(currentPath.dir, program.value);
-      console.log("targetFile", targetFile);
-      const xPath = path.relative(filePath, targetFile);
-      console.log("xPath", xPath);
-      const xPathFile = path.resolve(currentPath.dir, xPath);
-      if (this.fs.isFile(xPathFile) || this.fs.isFile(`${xPathFile}.js`)) {
+    if (/(Components)/.test(program.value) && !/\/H5\//.test(filePath)) {
+      const [xPath, xPathFile] = this.getRelativePath(program.value, filePath);
+      if (
+        this.fs.isFile(xPathFile) ||
+        this.fs.isFile(`${xPathFile}.js`) ||
+        this.fs.isFile(path.join(xPathFile, "./index.js"))
+      ) {
         program.value = xPath.split(path.sep).join("/");
+      } else {
+        console.log(filePath);
       }
     }
   }
   // scss @import
   ScssImport(program, filePath) {
-    if (program.name === "import" && /(Components)/.test(program.params)) {
-      //   const targetFilePath = path.join(this.fs.rootComponents, program.source.params);
-      //   console.log("resolve", path.relative(filePath, this.fs.rootComponents));
-      //   console.log("relative", path.relative(filePath, this.fs.targetPath));
-      const currentPath = path.parse(filePath);
+    if (
+      program.name === "import" &&
+      /(Components)/.test(program.params) &&
+      !/\/H5\//.test(filePath)
+    ) {
       const targetPath = program.params.replace(/'|"/g, "");
-      console.log("currentPath", currentPath.dir);
-      console.log("targetPath", path.parse(targetPath));
       const parseFile = path.parse(targetPath);
-      let targetFile = path.resolve(currentPath.dir, targetPath);
-      let targetFileLine = path.resolve(
-        currentPath.dir,
-        `${parseFile.dir}/_${parseFile.name}${parseFile.ext}`
-      ); // 为了兼容带_的文件名
-      console.log("targetFile", targetFile);
-      console.log("targetFile", targetFileLine);
-      const xPath = path.relative(filePath, targetFile);
-      const xPathLine = path.relative(filePath, targetFileLine);
-      console.log("xPath", xPath);
-      console.log("xPath", xPathLine);
-      const xPathFile = path.resolve(currentPath.dir, xPath);
-      const xPathFileLine = path.resolve(currentPath.dir, xPathLine);
+      const targetPathLine = `${parseFile.dir}/_${parseFile.name}${parseFile.ext}`;
+      const [xPath, xPathFile] = this.getRelativePath(targetPath, filePath);
+      const [xPathLine, xPathFileLine] = this.getRelativePath(
+        targetPathLine,
+        filePath
+      );
       if (this.fs.isFile(`${xPathFile}.scss`) || this.fs.isFile(xPathFile)) {
         program.params = '"' + xPath.split(path.sep).join("/") + '"';
       } else if (
@@ -209,6 +198,11 @@ class XPath {
         program.params = '"' + xPathLine.split(path.sep).join("/") + '"';
       }
     }
+  }
+  getRelativePath(programPath, filePath) {
+    const xPath = path.join(`${this.level}${programPath}`);
+    const xPathFile = path.join(filePath, `../${xPath}`);
+    return [xPath, xPathFile];
   }
 }
 module.exports = XPath;

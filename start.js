@@ -3,7 +3,7 @@
 const { program } = require("commander");
 const XPath = require("./tools/move/xPath");
 const path = require("path");
-const fs = require("./tools/move/file");
+const File = require("./tools/move/file");
 const Clone = require("./tools/clone/clone");
 const View = require("./tools/clone/view");
 const Example = require("./tools/clone/example");
@@ -22,23 +22,29 @@ program
   .option("-p, --projectPath <string>", "新项目的路径")
   .description("VUE与DB合并快捷命令")
   .action(async (data) => {
+    const pathArr = data.root.split("/");
+    const productType = pathArr[pathArr.length - 1];
+    File.productType = productType;
     if (!data.targetPath) {
-      const allTarget = fs.getSubFolder(data.root);
+      const allTarget = File.getSubFolder(data.root);
       for (let index = 0; index < allTarget.length; index++) {
         const element = allTarget[index];
         const xPath = new XPath(element);
         console.log("index", index);
         await xPath.start();
         console.log("index", index);
+        // File.removeFile(xPath.fs.rootComponents);
       }
       if (data.projectPath) {
-        fs.movProject(data.root, data.projectPath);
+        File.movProject(data.root, data.projectPath);
+        // File.removeFile(XPath.destination);
       }
     } else {
       const xPath = new XPath(data);
       await xPath.start();
+      File.removeFile(xPath.fs.rootComponents);
     }
-    fs.removeFileAndRestore(data.root, path.join(data.root, "./Components"));
+    File.gitRestore(data.root);
   });
 program
   .command("clone")

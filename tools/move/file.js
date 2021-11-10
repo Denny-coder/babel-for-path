@@ -2,10 +2,8 @@ var fs = require("fs");
 var path = require("path");
 var copyDir = require("copy-dir");
 const shell = require("shelljs");
-
 class File {
   constructor(data) {
-    this.data = data;
     this.rootComponents = path.join(data.root, "./Components");
     this.targetPath = data.targetPath;
     this.jsFileList = [];
@@ -29,48 +27,68 @@ class File {
     return result;
   }
   static movProject(originPath, targetPath) {
-    const pathArr = originPath.split("/");
-    const productType = pathArr[pathArr.length - 1];
-
     copyDir.sync(path.join(originPath, "../.."), targetPath, {
       filter: function (stat, filepath, filename) {
-        // do not want copy symbolicLink directories
-        // if (/Corp_Wirless_Vue/.test(filename)) {
-        //   return true;
-        // }
-        // if (/src/.test(filename)) {
-        //   return true;
-        // }
-        if (/\.git$|node_modules$|node-v7\.4\.0/.test(filename)) {
+        if (/\.git$|node_modules$|node-v7\.4\.0|H5$/.test(filename)) {
           return false;
         }
-        if (/src/g.test(filepath)) {
-          if (/src\/\w+\/\w+\/Components/g.test(filepath)) {
-            if (/src\/\w+\/Components\//g.test(filepath)) {
+        if (File.productType === "Flight") {
+          if (/src/g.test(filepath)) {
+            if (/src\/\w+\/\w+\/Components/g.test(filepath)) {
+              if (/src\/\w+\/Components\//g.test(filepath)) {
+                return true;
+              }
+              return false;
+            }
+            if (/src\/\w+\/Components/g.test(filepath)) {
               return true;
             }
-            return false;
+            if (/src\/\w+$/g.test(filepath)) {
+              if (new RegExp(`src\/${File.productType}`, "g").test(filepath)) {
+                return true;
+              } else {
+                return false;
+              }
+            }
           }
-          if (/src\/\w+\/Components/g.test(filepath)) {
-            return true;
-          }
-          if (/src\/\w+$/g.test(filepath)) {
-            if (new RegExp(`src\/${productType}`, "g").test(filepath)) {
-              return true;
-            } else {
+        } else {
+          if (/src/g.test(filepath)) {
+            if (/src\/\w+\/\w+\/Components/g.test(filepath)) {
+              if (/src\/Components\//g.test(filepath)) {
+                return true;
+              }
               return false;
+            }
+            if (/src\/\w+$/g.test(filepath)) {
+              if (
+                new RegExp(`src\/${File.productType}`, "g").test(filepath) ||
+                new RegExp(`src\/Components`, "g").test(filepath)
+              ) {
+                return true;
+              } else {
+                return false;
+              }
             }
           }
         }
-
         return true; // remind to return a true value when file check passed.
       },
     });
   }
   // 删除新增的文件和修改
-  static removeFileAndRestore(rootPath, rootComponents) {
+  static removeFile(rootComponents) {
+    shell.exec(`rm -rf ${rootComponents}`, function (code, stdout, stderr) {
+      if (stderr) {
+        console.log(stderr);
+      } else {
+        console.log("done!!!");
+      }
+    });
+  }
+  // 删除新增的文件和修改
+  static gitRestore(rootPath) {
     shell.exec(
-      `cd ${rootPath} && git restore . && rm -rf ${rootComponents}`,
+      `cd ${rootPath} && git restore .`,
       function (code, stdout, stderr) {
         if (stderr) {
           console.log(stderr);
