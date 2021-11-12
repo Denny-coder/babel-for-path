@@ -1,13 +1,13 @@
 {
   "name": "babel-for-path",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "使用babel进行代码引用路径转换",
   "main": "start.js",
   "bin": {
     "pathX": "start.js"
   },
   "scripts": {
-    "testMac": "node  start.js move -r /Users/zke/Documents/project/flight/vue/Corp_Wirless_Vue/src/Flight -p /Users/zke/Documents/project/flight/vue/corp_wirless_vue_flight",
+    "testMac": "node  start.js move -r /Users/zke/Documents/project/flight/vue/Corp_Wirless_Vue/src/Hotel -p /Users/zke/Documents/project/flight/vue/corp_wirless_vue_hotel",
     "testMacT": "node  start.js move -r /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Booking -t /Users/denny/Downloads/workSpace/vue-release/Corp_Wirless_Vue/src/Flight/Components",
     "nodeDevWin": "node   start.js move  -r E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Booking -t E:/ctrip/flight/corp-wirless-vue/Corp_Wirless_Vue/src/Flight/Components",
     "view": "node start.js clone -c E:/ctrip/tools/config/clone.json",
